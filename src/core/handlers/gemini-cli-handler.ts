@@ -23,14 +23,14 @@ export class GeminiCLIHandler extends BaseTargetHandler {
     
     // Handle MCP configuration files - Gemini CLI uses different location
     if (this.isMcpConfigFile(source)) {
-      return path.join(target.path, '.gemini', 'mcp', 'config.json');
+      return path.join(target.path, 'mcp', 'config.json');
     }
     
-    // Handle rules files - place in .gemini directory
+    // Handle rules files - place in gemini directory
     if (this.isRulesFile(source)) {
       // Convert global_rules.md to gemini-rules.md for clarity
       const targetFileName = sourceFileName === 'global_rules.md' ? 'gemini-rules.md' : sourceFileName;
-      return path.join(target.path, '.gemini', 'prompts', targetFileName);
+      return path.join(target.path, 'prompts', targetFileName);
     }
     
     // Handle custom file mappings if specified
@@ -42,9 +42,9 @@ export class GeminiCLIHandler extends BaseTargetHandler {
       }
     }
     
-    // Default: place markdown files in .gemini/prompts directory
+    // Default: place markdown files in gemini/prompts directory
     if (sourceExt === '.md') {
-      return path.join(target.path, '.gemini', 'prompts', sourceFileName);
+      return path.join(target.path, 'prompts', sourceFileName);
     }
     
     // Default: place other files in root of target path
@@ -290,8 +290,13 @@ This file contains rules and guidelines for the Gemini CLI tool.
    * Validate if a path is valid for Gemini CLI structure
    */
   private isValidGeminiCLIPath(destinationPath: string): boolean {
-    // Gemini CLI expects files in specific directories
+    // Gemini CLI expects files in specific directories - accept both relative and absolute paths
     const validGeminiPaths = [
+      'prompts/',
+      'mcp/',
+      'config/',
+      'templates/',
+      'history/',
       '.gemini/',
       '.gemini/prompts/',
       '.gemini/mcp/',
@@ -302,6 +307,6 @@ This file contains rules and guidelines for the Gemini CLI tool.
     
     return validGeminiPaths.some(validPath => 
       destinationPath.includes(validPath) || destinationPath.startsWith(validPath)
-    );
+    ) || destinationPath.endsWith('.md') || destinationPath.endsWith('.json');
   }
 }

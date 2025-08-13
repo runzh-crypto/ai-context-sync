@@ -23,14 +23,14 @@ export class CursorHandler extends BaseTargetHandler {
     
     // Handle MCP configuration files - Cursor uses different location
     if (this.isMcpConfigFile(source)) {
-      return path.join(target.path, '.cursor', 'mcp.json');
+      return path.join(target.path, 'mcp.json');
     }
     
-    // Handle rules files - place in .cursor directory
+    // Handle rules files - place in cursor directory
     if (this.isRulesFile(source)) {
       // Convert global_rules.md to cursor-rules.md for clarity
       const targetFileName = sourceFileName === 'global_rules.md' ? 'cursor-rules.md' : sourceFileName;
-      return path.join(target.path, '.cursor', targetFileName);
+      return path.join(target.path, targetFileName);
     }
     
     // Handle custom file mappings if specified
@@ -42,9 +42,9 @@ export class CursorHandler extends BaseTargetHandler {
       }
     }
     
-    // Default: place markdown files in .cursor directory
+    // Default: place markdown files in cursor directory
     if (sourceExt === '.md') {
-      return path.join(target.path, '.cursor', sourceFileName);
+      return path.join(target.path, sourceFileName);
     }
     
     // Default: place other files in root of target path
@@ -248,8 +248,11 @@ This file contains rules and guidelines for the Cursor AI IDE.
    * Validate if a path is valid for Cursor structure
    */
   private isValidCursorPath(destinationPath: string): boolean {
-    // Cursor expects files in specific directories
+    // Cursor expects files in specific directories - accept both relative and absolute paths
     const validCursorPaths = [
+      'rules/',
+      'settings/',
+      'extensions/',
       '.cursor/',
       '.cursor/rules/',
       '.cursor/settings/',
@@ -258,6 +261,6 @@ This file contains rules and guidelines for the Cursor AI IDE.
     
     return validCursorPaths.some(validPath => 
       destinationPath.includes(validPath) || destinationPath.startsWith(validPath)
-    );
+    ) || destinationPath.endsWith('.md') || destinationPath.endsWith('.json');
   }
 }

@@ -8,3 +8,7 @@ coverage/
 aisync.config.json
 
 /.kiro
+/.cursor
+/.vscode
+/.gemini
+/.claudecode

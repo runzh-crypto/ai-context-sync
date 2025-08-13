@@ -23,14 +23,14 @@ export class ClaudeCodeHandler extends BaseTargetHandler {
     
     // Handle MCP configuration files - Claude Code uses different location
     if (this.isMcpConfigFile(source)) {
-      return path.join(target.path, '.claudecode', 'config', 'mcp.json');
+      return path.join(target.path, 'config', 'mcp.json');
     }
     
-    // Handle rules files - place in .claudecode directory
+    // Handle rules files - place in claudecode directory
     if (this.isRulesFile(source)) {
       // Convert global_rules.md to claude-rules.md for clarity
       const targetFileName = sourceFileName === 'global_rules.md' ? 'claude-rules.md' : sourceFileName;
-      return path.join(target.path, '.claudecode', 'rules', targetFileName);
+      return path.join(target.path, 'rules', targetFileName);
     }
     
     // Handle custom file mappings if specified
@@ -42,9 +42,9 @@ export class ClaudeCodeHandler extends BaseTargetHandler {
       }
     }
     
-    // Default: place markdown files in .claudecode/rules directory
+    // Default: place markdown files in claudecode/rules directory
     if (sourceExt === '.md') {
-      return path.join(target.path, '.claudecode', 'rules', sourceFileName);
+      return path.join(target.path, 'rules', sourceFileName);
     }
     
     // Default: place other files in root of target path
@@ -238,8 +238,12 @@ This file contains rules and guidelines for the Claude Code AI IDE.
    * Validate if a path is valid for Claude Code structure
    */
   private isValidClaudeCodePath(destinationPath: string): boolean {
-    // Claude Code expects files in specific directories
+    // Claude Code expects files in specific directories - accept both relative and absolute paths
     const validClaudeCodePaths = [
+      'rules/',
+      'config/',
+      'settings/',
+      'extensions/',
       '.claudecode/',
       '.claudecode/rules/',
       '.claudecode/config/',
@@ -249,6 +253,6 @@ This file contains rules and guidelines for the Claude Code AI IDE.
     
     return validClaudeCodePaths.some(validPath => 
       destinationPath.includes(validPath) || destinationPath.startsWith(validPath)
-    );
+    ) || destinationPath.endsWith('.md') || destinationPath.endsWith('.json');
   }
 }

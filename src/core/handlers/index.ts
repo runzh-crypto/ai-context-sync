@@ -18,6 +18,7 @@ export { KiroHandler } from './kiro-handler';
 export { CursorHandler } from './cursor-handler';
 export { ClaudeCodeHandler } from './claudecode-handler';
 export { GeminiCLIHandler } from './gemini-cli-handler';
+export { VSCodeHandler } from './vscode-handler';
 
 // Re-export types for convenience
 export type { ITargetHandler, AIToolType, TargetConfig } from '../../types';

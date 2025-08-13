@@ -2,9 +2,24 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { glob } from 'glob';
 import { SyncConfig, SyncResult, KiroSyncConfig } from '../types';
+import { TargetManager, KiroHandler, CursorHandler, ClaudeCodeHandler, GeminiCLIHandler, VSCodeHandler } from './handlers';
 
 export class Syncer {
-  constructor(private config: SyncConfig | KiroSyncConfig) {}
+  private targetManager: TargetManager;
+
+  constructor(private config: SyncConfig | KiroSyncConfig) {
+    this.targetManager = TargetManager.getInstance();
+    this.registerHandlers();
+  }
+
+  private registerHandlers(): void {
+    // Register all available handlers
+    this.targetManager.register(new KiroHandler());
+    this.targetManager.register(new CursorHandler());
+    this.targetManager.register(new ClaudeCodeHandler());
+    this.targetManager.register(new GeminiCLIHandler());
+    this.targetManager.register(new VSCodeHandler());
+  }
 
   async sync(): Promise<SyncResult> {
     const startTime = Date.now();
@@ -21,13 +36,14 @@ export class Syncer {
       // Handle new configuration format
       const newConfig = this.config as SyncConfig;
       
-      // TODO: Implement new sync logic in future tasks
-      // For now, return a placeholder result
+      // Sync using the new handler system
+      const syncResults = await this.syncWithHandlers(newConfig);
+      
       return {
-        success: true,
-        message: 'New configuration system ready',
-        files: [],
-        errors: [],
+        success: syncResults.every(r => r.success),
+        message: `Sync completed: ${syncResults.filter(r => r.success).length}/${syncResults.length} targets successful`,
+        files: syncResults.flatMap(r => r.files || []),
+        errors: syncResults.flatMap(r => r.errors || []),
         timestamp: new Date(),
         duration: Date.now() - startTime
       };
@@ -45,6 +61,51 @@ export class Syncer {
 
   private isLegacyConfig(config: any): boolean {
     return 'sourceDir' in config && 'targetDirs' in config;
+  }
+
+  private async syncWithHandlers(config: SyncConfig): Promise<SyncResult[]> {
+    const results: SyncResult[] = [];
+
+    // Validate that all targets have registered handlers
+    const validation = this.targetManager.validateTargets(config.targets);
+    if (!validation.valid) {
+      return [{
+        success: false,
+        message: `Invalid target configuration: ${validation.errors.join(', ')}`,
+        files: [],
+        errors: validation.errors,
+        timestamp: new Date(),
+        duration: 0
+      }];
+    }
+
+    // Sync each source file to all enabled targets
+    for (const source of config.sources) {
+      // Check if source file exists
+      if (!await fs.pathExists(source)) {
+        results.push({
+          success: false,
+          message: `Source file not found: ${source}`,
+          files: [],
+          errors: [`Source file not found: ${source}`],
+          timestamp: new Date(),
+          duration: 0
+        });
+        continue;
+      }
+
+      // Sync to each target
+      for (const target of config.targets) {
+        if (target.enabled === false) {
+          continue; // Skip disabled targets
+        }
+
+        const result = await this.targetManager.sync(source, target);
+        results.push(result);
+      }
+    }
+
+    return results;
   }
 
   private async syncLegacy(config: KiroSyncConfig): Promise<SyncResult> {

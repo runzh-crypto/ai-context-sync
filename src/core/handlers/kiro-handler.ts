@@ -23,14 +23,14 @@ export class KiroHandler extends BaseTargetHandler {
     
     // Handle MCP configuration files
     if (this.isMcpConfigFile(source)) {
-      return path.join(target.path, '.kiro', 'settings', 'mcp.json');
+      return path.join(target.path, 'settings', 'mcp.json');
     }
     
     // Handle rules files - place in steering directory
     if (this.isRulesFile(source)) {
       // Convert global_rules.md to rules.md for Kiro
       const targetFileName = sourceFileName === 'global_rules.md' ? 'rules.md' : sourceFileName;
-      return path.join(target.path, '.kiro', 'steering', targetFileName);
+      return path.join(target.path, 'steering', targetFileName);
     }
     
     // Handle custom file mappings if specified
@@ -44,7 +44,7 @@ export class KiroHandler extends BaseTargetHandler {
     
     // Default: place markdown files in steering directory
     if (sourceExt === '.md') {
-      return path.join(target.path, '.kiro', 'steering', sourceFileName);
+      return path.join(target.path, 'steering', sourceFileName);
     }
     
     // Default: place other files in root of target path
@@ -241,6 +241,10 @@ This file contains rules and guidelines for the Kiro AI IDE.
   private isValidKiroPath(destinationPath: string): boolean {
     // Kiro expects files in specific directories
     const validKiroPaths = [
+      'steering/',
+      'settings/',
+      'hooks/',
+      'specs/',
       '.kiro/steering/',
       '.kiro/settings/',
       '.kiro/hooks/',
