@@ -12,35 +12,19 @@ export interface ITargetHandler {
 }
 
 /**
- * File monitoring interface
- */
-export interface IFileMonitor {
-  watch(paths: string[], callback: FileChangeCallback): void;
-  stop(): void;
-  isWatching(): boolean;
-}
-
-/**
  * Sync manager interface
  */
 export interface ISyncManager {
   sync(config: SyncConfig): Promise<SyncResult>;
-  watch(config: SyncConfig): Promise<void>;
   stop(): Promise<void>;
   getStatus(): SyncStatus;
 }
-
-/**
- * File change callback type
- */
-export type FileChangeCallback = (event: FileChangeEvent) => void;
 
 /**
  * Sync status information
  */
 export interface SyncStatus {
   isRunning: boolean;
-  isWatching: boolean;
   lastSync?: Date;
   totalFiles: number;
   successfulFiles: number;

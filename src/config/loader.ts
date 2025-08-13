@@ -140,12 +140,7 @@ export class ConfigLoader {
     const config: SyncConfig = {
       sources,
       targets,
-      mode: options.mode || DEFAULT_CONFIG.mode || SyncMode.INCREMENTAL,
-      watch: {
-        enabled: options.enableWatch || false,
-        interval: DEFAULT_CONFIG.watch?.interval || 1000,
-        debounce: DEFAULT_CONFIG.watch?.debounce || 500
-      }
+      mode: options.mode || DEFAULT_CONFIG.mode || SyncMode.INCREMENTAL
     };
 
     // Add global configuration if requested
@@ -187,37 +182,8 @@ export class ConfigLoader {
       case 'multi-tool':
         return await this.buildDefaultConfig({
           sources: ['./global_rules.md', './global_mcp.json'],
-          enableWatch: true,
           globalConfig: true
         });
-
-      case 'watch-mode':
-        return {
-          sources: ['./rules.md', './mcp.json'],
-          targets: [
-            {
-              name: 'kiro',
-              type: AIToolType.KIRO,
-              path: '.kiro',
-              mapping: [
-                {
-                  source: 'rules.md',
-                  destination: 'steering/rules.md'
-                },
-                {
-                  source: 'mcp.json',
-                  destination: 'settings/mcp.json'
-                }
-              ]
-            }
-          ],
-          mode: SyncMode.WATCH,
-          watch: {
-            enabled: true,
-            interval: 500,
-            debounce: 200
-          }
-        };
 
       default:
         return await this.buildDefaultConfig({});

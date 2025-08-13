@@ -13,7 +13,6 @@ export {
   FileMapping, 
   AIToolType,
   SyncMode,
-  WatchConfig,
   GlobalConfig,
   McpConfig,
   ValidationResult,

@@ -46,11 +46,7 @@ export class ConfigValidator {
       });
     }
 
-    // Validate watch configuration
-    if (config.watch) {
-      const watchErrors = this.validateWatchConfig(config.watch);
-      errors.push(...watchErrors);
-    }
+
 
     // Validate global configuration
     if (config.global) {
@@ -117,26 +113,7 @@ export class ConfigValidator {
     return errors;
   }
 
-  /**
-   * Validate watch configuration
-   */
-  private static validateWatchConfig(watch: any): string[] {
-    const errors: string[] = [];
 
-    if (typeof watch.enabled !== 'boolean') {
-      errors.push('watch.enabled must be a boolean');
-    }
-
-    if (watch.interval !== undefined && (typeof watch.interval !== 'number' || watch.interval < 100)) {
-      errors.push('watch.interval must be a number >= 100');
-    }
-
-    if (watch.debounce !== undefined && (typeof watch.debounce !== 'number' || watch.debounce < 0)) {
-      errors.push('watch.debounce must be a non-negative number');
-    }
-
-    return errors;
-  }
 
   /**
    * Validate global configuration
@@ -180,12 +157,7 @@ export class ConfigValidator {
     return {
       sources: [legacyConfig.sourceDir],
       targets,
-      mode: SyncMode.FULL,
-      watch: {
-        enabled: false,
-        interval: 1000,
-        debounce: 500
-      }
+      mode: SyncMode.FULL
     };
   }
 }

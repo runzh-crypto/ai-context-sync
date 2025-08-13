@@ -31,7 +31,6 @@ export interface ConfigCreationOptions {
   sources?: string[];
   targets?: TargetConfig[];
   mode?: SyncMode;
-  enableWatch?: boolean;
   globalConfig?: boolean;
 }
 
@@ -78,11 +77,6 @@ export interface ConfigSchema {
 export const DEFAULT_CONFIG: Partial<SyncConfig> = {
   mode: SyncMode.INCREMENTAL,
   sources: ["./global_rules.md", "./global_mcp.json"],
-  watch: {
-    enabled: false,
-    interval: 1000,
-    debounce: 500,
-  },
 };
 
 /**

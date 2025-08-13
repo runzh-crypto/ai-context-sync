@@ -21,6 +21,15 @@ export class CursorHandler extends BaseTargetHandler {
     const sourceFileName = path.basename(source);
     const sourceExt = path.extname(source);
     
+    // Handle custom file mappings first (highest priority)
+    if (target.mapping) {
+      for (const mapping of target.mapping) {
+        if (this.matchesSourcePattern(source, mapping.source)) {
+          return path.join(target.path, mapping.destination);
+        }
+      }
+    }
+    
     // Handle MCP configuration files - Cursor uses different location
     if (this.isMcpConfigFile(source)) {
       return path.join(target.path, 'mcp.json');
@@ -31,15 +40,6 @@ export class CursorHandler extends BaseTargetHandler {
       // Convert global_rules.md to cursor-rules.md for clarity
       const targetFileName = sourceFileName === 'global_rules.md' ? 'cursor-rules.md' : sourceFileName;
       return path.join(target.path, targetFileName);
-    }
-    
-    // Handle custom file mappings if specified
-    if (target.mapping) {
-      for (const mapping of target.mapping) {
-        if (this.matchesSourcePattern(source, mapping.source)) {
-          return path.join(target.path, mapping.destination);
-        }
-      }
     }
     
     // Default: place markdown files in cursor directory

@@ -15,22 +15,22 @@ describe('AI Tool Handlers', () => {
       const target: TargetConfig = {
         name: 'kiro-test',
         type: AIToolType.KIRO,
-        path: '/project'
+        path: '.kiro'
       };
 
       const rulesPath = handler.getTargetPath(target, 'global_rules.md');
-      expect(rulesPath).toBe(path.join('/project', '.kiro', 'steering', 'rules.md'));
+      expect(rulesPath).toBe(path.join('.kiro', 'steering', 'rules.md'));
     });
 
     test('should generate correct target paths for MCP config', () => {
       const target: TargetConfig = {
         name: 'kiro-test',
         type: AIToolType.KIRO,
-        path: '/project'
+        path: '.kiro'
       };
 
       const mcpPath = handler.getTargetPath(target, 'global_mcp.json');
-      expect(mcpPath).toBe(path.join('/project', '.kiro', 'settings', 'mcp.json'));
+      expect(mcpPath).toBe(path.join('.kiro', 'settings', 'mcp.json'));
     });
 
     test('should validate target configuration', () => {
@@ -63,22 +63,22 @@ describe('AI Tool Handlers', () => {
       const target: TargetConfig = {
         name: 'cursor-test',
         type: AIToolType.CURSOR,
-        path: '/project'
+        path: '.cursor'
       };
 
       const rulesPath = handler.getTargetPath(target, 'global_rules.md');
-      expect(rulesPath).toBe(path.join('/project', '.cursor', 'cursor-rules.md'));
+      expect(rulesPath).toBe(path.join('.cursor', 'cursor-rules.md'));
     });
 
     test('should generate correct target paths for MCP config', () => {
       const target: TargetConfig = {
         name: 'cursor-test',
         type: AIToolType.CURSOR,
-        path: '/project'
+        path: '.cursor'
       };
 
       const mcpPath = handler.getTargetPath(target, 'global_mcp.json');
-      expect(mcpPath).toBe(path.join('/project', '.cursor', 'mcp.json'));
+      expect(mcpPath).toBe(path.join('.cursor', 'mcp.json'));
     });
   });
 
@@ -94,22 +94,22 @@ describe('AI Tool Handlers', () => {
       const target: TargetConfig = {
         name: 'claudecode-test',
         type: AIToolType.CLAUDECODE,
-        path: '/project'
+        path: '.claudecode'
       };
 
       const rulesPath = handler.getTargetPath(target, 'global_rules.md');
-      expect(rulesPath).toBe(path.join('/project', '.claudecode', 'rules', 'claude-rules.md'));
+      expect(rulesPath).toBe(path.join('.claudecode', 'rules', 'claude-rules.md'));
     });
 
     test('should generate correct target paths for MCP config', () => {
       const target: TargetConfig = {
         name: 'claudecode-test',
         type: AIToolType.CLAUDECODE,
-        path: '/project'
+        path: '.claudecode'
       };
 
       const mcpPath = handler.getTargetPath(target, 'global_mcp.json');
-      expect(mcpPath).toBe(path.join('/project', '.claudecode', 'config', 'mcp.json'));
+      expect(mcpPath).toBe(path.join('.claudecode', 'config', 'mcp.json'));
     });
   });
 
@@ -125,22 +125,22 @@ describe('AI Tool Handlers', () => {
       const target: TargetConfig = {
         name: 'gemini-test',
         type: AIToolType.GEMINI_CLI,
-        path: '/project'
+        path: '.gemini'
       };
 
       const rulesPath = handler.getTargetPath(target, 'global_rules.md');
-      expect(rulesPath).toBe(path.join('/project', '.gemini', 'prompts', 'gemini-rules.md'));
+      expect(rulesPath).toBe(path.join('.gemini', 'prompts', 'gemini-rules.md'));
     });
 
     test('should generate correct target paths for MCP config', () => {
       const target: TargetConfig = {
         name: 'gemini-test',
         type: AIToolType.GEMINI_CLI,
-        path: '/project'
+        path: '.gemini'
       };
 
       const mcpPath = handler.getTargetPath(target, 'global_mcp.json');
-      expect(mcpPath).toBe(path.join('/project', '.gemini', 'mcp', 'config.json'));
+      expect(mcpPath).toBe(path.join('.gemini', 'mcp', 'config.json'));
     });
   });
 

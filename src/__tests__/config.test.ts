@@ -96,16 +96,7 @@ describe('Configuration System', () => {
       
       expect(config.sources).toEqual(['./global_rules.md', './global_mcp.json']);
       expect(config.targets.length).toBeGreaterThan(1);
-      expect(config.watch?.enabled).toBe(true);
       expect(config.global).toBeDefined();
-    });
-
-    it('should create watch mode template', async () => {
-      const config = await ConfigLoader.createTemplate('watch-mode');
-      
-      expect(config.mode).toBe(SyncMode.WATCH);
-      expect(config.watch?.enabled).toBe(true);
-      expect(config.watch?.interval).toBe(500);
     });
   });
 
@@ -122,7 +113,6 @@ describe('Configuration System', () => {
     it('should have correct SyncMode enum values', () => {
       expect(SyncMode.FULL).toBe('full');
       expect(SyncMode.INCREMENTAL).toBe('incremental');
-      expect(SyncMode.WATCH).toBe('watch');
     });
   });
 });

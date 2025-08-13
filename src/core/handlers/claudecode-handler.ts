@@ -21,6 +21,15 @@ export class ClaudeCodeHandler extends BaseTargetHandler {
     const sourceFileName = path.basename(source);
     const sourceExt = path.extname(source);
     
+    // Handle custom file mappings first (highest priority)
+    if (target.mapping) {
+      for (const mapping of target.mapping) {
+        if (this.matchesSourcePattern(source, mapping.source)) {
+          return path.join(target.path, mapping.destination);
+        }
+      }
+    }
+    
     // Handle MCP configuration files - Claude Code uses different location
     if (this.isMcpConfigFile(source)) {
       return path.join(target.path, 'config', 'mcp.json');
@@ -31,15 +40,6 @@ export class ClaudeCodeHandler extends BaseTargetHandler {
       // Convert global_rules.md to claude-rules.md for clarity
       const targetFileName = sourceFileName === 'global_rules.md' ? 'claude-rules.md' : sourceFileName;
       return path.join(target.path, 'rules', targetFileName);
-    }
-    
-    // Handle custom file mappings if specified
-    if (target.mapping) {
-      for (const mapping of target.mapping) {
-        if (this.matchesSourcePattern(source, mapping.source)) {
-          return path.join(target.path, mapping.destination);
-        }
-      }
     }
     
     // Default: place markdown files in claudecode/rules directory

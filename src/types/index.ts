@@ -10,8 +10,7 @@ export enum AIToolType {
 
 export enum SyncMode {
   FULL = 'full',
-  INCREMENTAL = 'incremental',
-  WATCH = 'watch'
+  INCREMENTAL = 'incremental'
 }
 
 // File Mapping Configuration
@@ -37,13 +36,6 @@ export interface TargetConfig {
   enabled?: boolean;
 }
 
-// Watch Configuration
-export interface WatchConfig {
-  enabled: boolean;
-  interval: number;
-  debounce: number;
-}
-
 // Global Configuration
 export interface GlobalConfig {
   rulesFile: string;
@@ -56,7 +48,6 @@ export interface SyncConfig {
   sources: string[];
   targets: TargetConfig[];
   mode: SyncMode;
-  watch?: WatchConfig;
   global?: GlobalConfig;
 }
 
