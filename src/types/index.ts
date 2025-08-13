@@ -3,7 +3,8 @@ export enum AIToolType {
   KIRO = 'kiro',
   CURSOR = 'cursor',
   VSCODE = 'vscode',
-  MCP = 'mcp',
+  CLAUDECODE = 'claudecode',
+  GEMINI_CLI = 'gemini-cli',
   CUSTOM = 'custom'
 }
 

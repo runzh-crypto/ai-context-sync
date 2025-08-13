@@ -114,7 +114,8 @@ describe('Configuration System', () => {
       expect(AIToolType.KIRO).toBe('kiro');
       expect(AIToolType.CURSOR).toBe('cursor');
       expect(AIToolType.VSCODE).toBe('vscode');
-      expect(AIToolType.MCP).toBe('mcp');
+      expect(AIToolType.CLAUDECODE).toBe('claudecode');
+      expect(AIToolType.GEMINI_CLI).toBe('gemini-cli');
       expect(AIToolType.CUSTOM).toBe('custom');
     });
 

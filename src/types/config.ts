@@ -111,6 +111,10 @@ export const DEFAULT_TARGETS: Record<AIToolType, Partial<TargetConfig>> = {
         source: "global_rules.md",
         destination: "rules.md",
       },
+      {
+        source: "global_mcp.json",
+        destination: "mcp.json",
+      },
     ],
   },
   [AIToolType.VSCODE]: {
@@ -123,16 +127,35 @@ export const DEFAULT_TARGETS: Record<AIToolType, Partial<TargetConfig>> = {
       },
     ],
   },
-  [AIToolType.MCP]: {
-    type: AIToolType.MCP,
-    path: ".mcp",
+  [AIToolType.CLAUDECODE]: {
+    type: AIToolType.CLAUDECODE,
+    path: ".claudecode",
     mapping: [
       {
+        source: "global_rules.md",
+        destination: "rules/claude-rules.md",
+      },
+      {
         source: "global_mcp.json",
-        destination: "config.json",
+        destination: "config/mcp.json",
       },
     ],
   },
+  [AIToolType.GEMINI_CLI]: {
+    type: AIToolType.GEMINI_CLI,
+    path: ".gemini",
+    mapping: [
+      {
+        source: "global_rules.md",
+        destination: "prompts/gemini-rules.md",
+      },
+      {
+        source: "global_mcp.json",
+        destination: "mcp/config.json",
+      },
+    ],
+  },
+
   [AIToolType.CUSTOM]: {
     type: AIToolType.CUSTOM,
     path: "",
