@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-filesystem",
+        "--"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "git": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "."
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

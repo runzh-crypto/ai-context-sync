@@ -1,0 +1,141 @@
+import {
+  AIToolType,
+  SyncMode,
+  TargetConfig,
+  SyncConfig,
+} from "./index";
+
+/**
+ * Configuration validation and creation utilities
+ */
+export interface ConfigValidationOptions {
+  strict?: boolean;
+  allowMissingTargets?: boolean;
+  validatePaths?: boolean;
+}
+
+/**
+ * Default configuration templates
+ */
+export interface ConfigTemplate {
+  name: string;
+  description: string;
+  config: Partial<SyncConfig>;
+}
+
+/**
+ * Configuration creation options
+ */
+export interface ConfigCreationOptions {
+  template?: string;
+  sources?: string[];
+  targets?: TargetConfig[];
+  mode?: SyncMode;
+  enableWatch?: boolean;
+  globalConfig?: boolean;
+}
+
+/**
+ * Extended sync configuration with metadata
+ */
+export interface ExtendedSyncConfig extends SyncConfig {
+  version?: string;
+  created?: Date;
+  lastModified?: Date;
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Configuration schema for validation
+ */
+export interface ConfigSchema {
+  sources: {
+    required: boolean;
+    type: "array";
+    items: {
+      type: "string";
+      pattern?: string;
+    };
+  };
+  targets: {
+    required: boolean;
+    type: "array";
+    items: {
+      type: "object";
+      properties: Record<string, any>;
+    };
+  };
+  mode: {
+    required: boolean;
+    type: "string";
+    enum: SyncMode[];
+  };
+}
+
+/**
+ * Default configuration values
+ */
+export const DEFAULT_CONFIG: Partial<SyncConfig> = {
+  mode: SyncMode.INCREMENTAL,
+  sources: ["./global_rules.md", "./global_mcp.json"],
+  watch: {
+    enabled: false,
+    interval: 1000,
+    debounce: 500,
+  },
+};
+
+/**
+ * Default target configurations for common AI tools
+ */
+export const DEFAULT_TARGETS: Record<AIToolType, Partial<TargetConfig>> = {
+  [AIToolType.KIRO]: {
+    type: AIToolType.KIRO,
+    path: ".kiro",
+    mapping: [
+      {
+        source: "global_rules.md",
+        destination: "steering/rules.md",
+      },
+      {
+        source: "global_mcp.json",
+        destination: "settings/mcp.json",
+      },
+    ],
+  },
+  [AIToolType.CURSOR]: {
+    type: AIToolType.CURSOR,
+    path: ".cursor",
+    mapping: [
+      {
+        source: "global_rules.md",
+        destination: "rules.md",
+      },
+    ],
+  },
+  [AIToolType.VSCODE]: {
+    type: AIToolType.VSCODE,
+    path: ".vscode",
+    mapping: [
+      {
+        source: "global_rules.md",
+        destination: "rules.md",
+      },
+    ],
+  },
+  [AIToolType.MCP]: {
+    type: AIToolType.MCP,
+    path: ".mcp",
+    mapping: [
+      {
+        source: "global_mcp.json",
+        destination: "config.json",
+      },
+    ],
+  },
+  [AIToolType.CUSTOM]: {
+    type: AIToolType.CUSTOM,
+    path: "",
+    mapping: [],
+  },
+};

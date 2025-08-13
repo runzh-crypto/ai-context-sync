@@ -1,0 +1,59 @@
+{
+  "sources": [
+    "./global_rules.md",
+    "./global_mcp.json"
+  ],
+  "targets": [
+    {
+      "name": "kiro",
+      "type": "kiro",
+      "path": ".kiro",
+      "enabled": true,
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": "steering/rules.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": "settings/mcp.json"
+        }
+      ]
+    },
+    {
+      "name": "cursor",
+      "type": "cursor",
+      "path": ".cursor",
+      "enabled": true,
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": "rules.md"
+        }
+      ]
+    },
+    {
+      "name": "vscode",
+      "type": "vscode",
+      "path": ".vscode",
+      "enabled": true,
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": "rules.md"
+        }
+      ]
+    }
+  ],
+  "mode": "incremental",
+  "watch": {
+    "enabled": false,
+    "interval": 1000,
+    "debounce": 500
+  },
+  "global": {
+    "rulesFile": "global_rules.md",
+    "mcpFile": "global_mcp.json",
+    "installPath": "~/.aisync"
+  }
+}
