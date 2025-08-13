@@ -12,6 +12,7 @@ export { GlobalConfiguration } from './global-config';
 
 // Sync functionality
 export { Syncer } from './syncer';
+export { SyncManager } from './SyncManager';
 
 // File change tracking
 export { FileChangeTracker } from './file-change-tracker';
