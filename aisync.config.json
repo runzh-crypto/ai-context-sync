@@ -27,7 +27,11 @@
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": ".cursor/rules"
+          "destination": ".cursor/rules/global_rules.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".cursor/mcp.json"
         }
       ],
       "enabled": true
@@ -39,22 +43,30 @@
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": ".vscode/copilot-instructions.md"
+          "destination": ".vscode/instructions.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".vscode/settings.json"
         }
       ],
       "enabled": true
     },
     {
       "name": "claude-code",
-      "type": "claude-code",
+      "type": "claudecode",
       "path": ".",
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": ".claude/instructions.md"
+          "destination": ".claudecode/claudecode.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".claudecode/mcp.json"
         }
       ],
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "gemini-code-assist",
@@ -62,11 +74,15 @@
       "path": ".",
       "mapping": [
         {
+          "source": "global_rules.md",
+          "destination": ".gemini/gemini.md"
+        },
+        {
           "source": "global_mcp.json",
-          "destination": ".gemini/mcp-config.json"
+          "destination": ".gemini/settings.json"
         }
       ],
-      "enabled": false
+      "enabled": true
     }
   ],
   "mode": "incremental",

@@ -81,6 +81,7 @@ export const DEFAULT_CONFIG: Partial<SyncConfig> = {
 /**
  * Default target configurations for common AI tools
  * Based on official documentation paths
+ * Each tool includes both rules and MCP configuration where applicable
  */
 export const DEFAULT_TARGETS: Record<string, Partial<TargetConfig>> = {
   'kiro': {
@@ -103,7 +104,11 @@ export const DEFAULT_TARGETS: Record<string, Partial<TargetConfig>> = {
     mapping: [
       {
         source: "global_rules.md",
-        destination: ".cursor/rules",
+        destination: ".cursor/rules/global_rules.md",
+      },
+      {
+        source: "global_mcp.json",
+        destination: ".cursor/mcp.json",
       },
     ],
   },
@@ -113,17 +118,25 @@ export const DEFAULT_TARGETS: Record<string, Partial<TargetConfig>> = {
     mapping: [
       {
         source: "global_rules.md",
-        destination: ".vscode/copilot-instructions.md",
+        destination: ".vscode/instructions.md",
+      },
+      {
+        source: "global_mcp.json",
+        destination: ".vscode/settings.json",
       },
     ],
   },
-  'claude-code': {
-    type: 'claude-code',
+  'claudecode': {
+    type: 'claudecode',
     path: ".",
     mapping: [
       {
         source: "global_rules.md",
-        destination: ".claude/instructions.md",
+        destination: ".claudecode/claudecode.md",
+      },
+      {
+        source: "global_mcp.json",
+        destination: ".claudecode/mcp.json",
       },
     ],
   },
@@ -132,8 +145,12 @@ export const DEFAULT_TARGETS: Record<string, Partial<TargetConfig>> = {
     path: ".",
     mapping: [
       {
+        source: "global_rules.md",
+        destination: ".gemini/gemini.md",
+      },
+      {
         source: "global_mcp.json",
-        destination: ".gemini/mcp-config.json",
+        destination: ".gemini/settings.json",
       },
     ],
   },

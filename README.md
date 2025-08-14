@@ -53,7 +53,7 @@ The core concept is simple: define source files and map them to destination path
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": ".kiro/steering/global_rules.md"
+          "destination": ".kiro/steering/rules.md"
         },
         {
           "source": "global_mcp.json",
@@ -69,7 +69,27 @@ The core concept is simple: define source files and map them to destination path
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": ".cursor/rules"
+          "destination": ".cursor/rules/global_rules.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".cursor/mcp.json"
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "vscode",
+      "type": "vscode",
+      "path": ".",
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": ".vscode/instructions.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".vscode/settings.json"
         }
       ],
       "enabled": true
@@ -100,21 +120,23 @@ Based on official documentation, here are the recommended paths for popular AI t
 - [Documentation](https://kiro.dev/docs/steering/)
 
 ### Cursor
-- **Rules**: `.cursor/rules` 
-- **Instructions**: `.cursor/instructions`
+- **Rules**: `.cursor/rules/global_rules.md` 
+- **MCP Config**: `.cursor/mcp.json`
 - [Documentation](https://docs.cursor.com/zh/context/rules)
 
 ### VSCode Copilot
-- **Instructions**: `.vscode/copilot-instructions.md`
+- **Instructions**: `.vscode/instructions.md`
+- **Settings**: `.vscode/settings.json`
 - [Documentation](https://code.visualstudio.com/docs/copilot/copilot-customization)
 
 ### Claude Code
-- **Instructions**: `.claude/instructions.md`
-- **Context**: `.claude/context/`
+- **Instructions**: `.claudecode/claudecode.md`
+- **Settings**: `.claudecode/settings.json`
 - [Documentation](https://www.anthropic.com/engineering/claude-code-best-practices)
 
 ### Gemini Code Assist
-- **MCP Config**: `.gemini/mcp-config.json`
+- **Instructions**: `.gemini/gemini.md`
+- **Settings**: `.gemini/settings.json`
 - [Documentation](https://cloud.google.com/gemini/docs/codeassist/use-agentic-chat-pair-programmer#configure-mcp-servers)
 
 ### Custom AI Tools
@@ -195,13 +217,22 @@ project/
 ├── global_mcp.json            # Your MCP configuration
 ├── .kiro/
 │   ├── steering/
-│   │   └── global_rules.md    # ← Synced from global_rules.md
+│   │   └── rules.md           # ← Synced from global_rules.md
 │   └── settings/
 │       └── mcp.json           # ← Synced from global_mcp.json
 ├── .cursor/
-│   └── rules                  # ← Synced from global_rules.md
-└── .vscode/
-    └── copilot-instructions.md # ← Synced from global_rules.md
+│   ├── rules/
+│   │   └── global_rules.md    # ← Synced from global_rules.md
+│   └── mcp.json               # ← Synced from global_mcp.json
+├── .vscode/
+│   ├── instructions.md        # ← Synced from global_rules.md
+│   └── settings.json          # ← Synced from global_mcp.json
+├── .claudecode/
+│   ├── claudecode.md          # ← Synced from global_rules.md
+│   └── settings.json          # ← Synced from global_mcp.json
+└── .gemini/
+    ├── gemini.md              # ← Synced from global_rules.md
+    └── settings.json          # ← Synced from global_mcp.json
 ```
 
 ## Development
