@@ -1,14 +1,14 @@
-# AI IDE 规则示例
+# AI IDE Rules Example
 
-这是一个示例规则文件，用于演示同步功能。
+This is an example rules file to demonstrate sync functionality.
 
-## 编码规范
+## Coding Standards
 
-- 使用 TypeScript 进行开发
-- 遵循 ESLint 规则
-- 使用 Prettier 格式化代码
+- Use TypeScript for development
+- Follow ESLint rules
+- Use Prettier for code formatting
 
-## 项目结构
+## Project Structure
 
 ```
 src/

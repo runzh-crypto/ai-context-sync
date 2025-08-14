@@ -1,0 +1,40 @@
+# Source files
+src/
+tsconfig.json
+jest.config.js
+
+# Development files
+.kiro/
+.cursor/
+.vscode/
+.gemini/
+.claudecode/
+.claude/
+.claudecode/
+
+# Test files
+**/*.test.ts
+**/*.test.js
+__tests__/
+
+# Documentation
+docs/
+
+# Examples (keep only essential ones)
+examples/
+
+# Config files for development
+aisync.config.json
+global_mcp.json
+global_rules.md
+
+# Logs and temp files
+*.log
+.DS_Store
+.env
+coverage/
+*.tgz
+
+# Git
+.git/
+.gitignore
