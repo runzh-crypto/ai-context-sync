@@ -1,8 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { glob } from 'glob';
 import { SyncConfig, SyncResult, SyncMode, TargetConfig } from '../types';
-import { TargetManager } from './handlers';
+import { TargetManager, UniversalHandler } from './handlers';
 import { FileChangeTracker } from './file-change-tracker';
 
 /**
@@ -13,30 +12,44 @@ export class SyncManager {
   private targetManager: TargetManager;
   private fileChangeTracker: FileChangeTracker;
 
-  constructor(private config: SyncConfig) {
+  private config?: SyncConfig;
+
+  constructor(config?: SyncConfig) {
+    this.config = config;
     this.targetManager = TargetManager.getInstance();
     this.fileChangeTracker = new FileChangeTracker();
+    this.registerHandlers();
+  }
+
+  private registerHandlers(): void {
+    // Register universal handler that works for all AI tools based on config
+    this.targetManager.register(new UniversalHandler());
   }
 
   /**
    * Execute sync based on the configured mode
+   * @param config Optional config to use for this sync operation
    * @returns Promise<SyncResult>
    */
-  async sync(): Promise<SyncResult> {
+  async sync(config?: SyncConfig): Promise<SyncResult> {
+    const syncConfig = config || this.config;
+    if (!syncConfig) {
+      throw new Error('No configuration provided for sync operation');
+    }
     const startTime = Date.now();
 
     try {
       let result: SyncResult;
 
-      switch (this.config.mode) {
+      switch (syncConfig.mode) {
         case SyncMode.FULL:
-          result = await this.fullSync();
+          result = await this.fullSync(syncConfig);
           break;
         case SyncMode.INCREMENTAL:
-          result = await this.incrementalSync();
+          result = await this.incrementalSync(syncConfig);
           break;
         default:
-          throw new Error(`Unsupported sync mode: ${this.config.mode}`);
+          throw new Error(`Unsupported sync mode: ${syncConfig.mode}`);
       }
 
       result.duration = Date.now() - startTime;
@@ -56,15 +69,16 @@ export class SyncManager {
   /**
    * Full sync mode - completely replaces target files
    * Clears target directories and copies all source files
+   * @param config Configuration to use for sync
    * @returns Promise<SyncResult>
    */
-  private async fullSync(): Promise<SyncResult> {
+  private async fullSync(config: SyncConfig): Promise<SyncResult> {
     const results: string[] = [];
     const errors: string[] = [];
 
     try {
       // Validate targets
-      const validation = this.targetManager.validateTargets(this.config.targets);
+      const validation = this.targetManager.validateTargets(config.targets);
       if (!validation.valid) {
         return {
           success: false,
@@ -77,16 +91,16 @@ export class SyncManager {
       }
 
       // Clean target directories first
-      await this.cleanTargetDirectories();
+      await this.cleanTargetDirectories(config);
 
       // Sync all source files to all targets
-      for (const source of this.config.sources) {
+      for (const source of config.sources) {
         if (!await fs.pathExists(source)) {
           errors.push(`Source file not found: ${source}`);
           continue;
         }
 
-        for (const target of this.config.targets) {
+        for (const target of config.targets) {
           if (target.enabled === false) {
             continue;
           }
@@ -128,8 +142,8 @@ export class SyncManager {
    * Clean target directories before full sync
    * Removes existing files in target directories to ensure clean state
    */
-  private async cleanTargetDirectories(): Promise<void> {
-    for (const target of this.config.targets) {
+  private async cleanTargetDirectories(config: SyncConfig): Promise<void> {
+    for (const target of config.targets) {
       if (target.enabled === false) {
         continue;
       }
@@ -140,12 +154,16 @@ export class SyncManager {
           continue;
         }
 
-        // Get the target directory path
-        const targetPath = this.getTargetDirectoryPath(target);
-        
-        if (await fs.pathExists(targetPath)) {
-          // Remove all files in the target directory but keep the directory structure
-          await this.cleanDirectory(targetPath);
+        // Clean each mapped destination directory
+        if (target.mapping) {
+          for (const mapping of target.mapping) {
+            const targetPath = path.dirname(mapping.destination);
+            
+            if (await fs.pathExists(targetPath)) {
+              // Remove all files in the target directory but keep the directory structure
+              await this.cleanDirectory(targetPath);
+            }
+          }
         }
       } catch (error) {
         // Log warning but don't fail the entire sync
@@ -154,28 +172,7 @@ export class SyncManager {
     }
   }
 
-  /**
-   * Get the target directory path for a given target configuration
-   * @param target - Target configuration
-   * @returns string - Target directory path
-   */
-  private getTargetDirectoryPath(target: TargetConfig): string {
-    // This is a simplified implementation - in practice, this would depend on the target type
-    switch (target.type) {
-      case 'kiro':
-        return path.join(target.path, '.kiro', 'steering');
-      case 'cursor':
-        return path.join(target.path, '.cursor');
-      case 'vscode':
-        return path.join(target.path, '.vscode');
-      case 'claudecode':
-        return path.join(target.path, '.claudecode', 'rules');
-      case 'gemini-cli':
-        return path.join(target.path, '.gemini', 'prompts');
-      default:
-        return target.path;
-    }
-  }
+
 
   /**
    * Clean a directory by removing all files but preserving directory structure
@@ -201,53 +198,21 @@ export class SyncManager {
     }
   }
 
-  /**
-   * Batch copy files from source to target directories
-   * @param sourceFiles - Array of source file paths
-   * @param targetConfigs - Array of target configurations
-   * @returns Promise<{ files: string[], errors: string[] }>
-   */
-  private async batchCopyFiles(
-    sourceFiles: string[], 
-    targetConfigs: TargetConfig[]
-  ): Promise<{ files: string[], errors: string[] }> {
-    const files: string[] = [];
-    const errors: string[] = [];
 
-    for (const sourceFile of sourceFiles) {
-      for (const target of targetConfigs) {
-        if (target.enabled === false) {
-          continue;
-        }
-
-        try {
-          const result = await this.targetManager.sync(sourceFile, target);
-          if (result.success) {
-            files.push(...(result.files || []));
-          } else {
-            errors.push(...(result.errors || []));
-          }
-        } catch (error) {
-          errors.push(`Failed to copy ${sourceFile} to ${target.name}: ${error}`);
-        }
-      }
-    }
-
-    return { files, errors };
-  }
 
   /**
    * Incremental sync mode - only syncs changed files
    * Uses FileChangeTracker to detect changes and optimize sync
+   * @param config Configuration to use for sync
    * @returns Promise<SyncResult>
    */
-  private async incrementalSync(): Promise<SyncResult> {
+  private async incrementalSync(config: SyncConfig): Promise<SyncResult> {
     const results: string[] = [];
     const errors: string[] = [];
 
     try {
       // Validate targets
-      const validation = this.targetManager.validateTargets(this.config.targets);
+      const validation = this.targetManager.validateTargets(config.targets);
       if (!validation.valid) {
         return {
           success: false,
@@ -260,7 +225,7 @@ export class SyncManager {
       }
 
       // Get changed files using FileChangeTracker
-      const changedFiles = await this.getChangedSourceFiles();
+      const changedFiles = await this.getChangedSourceFiles(config);
 
       if (changedFiles.length === 0) {
         return {
@@ -275,7 +240,7 @@ export class SyncManager {
 
       // Sync only changed files
       for (const sourceFile of changedFiles) {
-        for (const target of this.config.targets) {
+        for (const target of config.targets) {
           if (target.enabled === false) {
             continue;
           }
@@ -317,12 +282,13 @@ export class SyncManager {
 
   /**
    * Get source files that have changed since last sync
+   * @param config Configuration containing source files to check
    * @returns Promise<string[]> - Array of changed source file paths
    */
-  private async getChangedSourceFiles(): Promise<string[]> {
+  private async getChangedSourceFiles(config: SyncConfig): Promise<string[]> {
     const changedFiles: string[] = [];
 
-    for (const source of this.config.sources) {
+    for (const source of config.sources) {
       try {
         if (await fs.pathExists(source)) {
           // Check if file has changed
@@ -345,9 +311,15 @@ export class SyncManager {
   /**
    * Initialize file tracking for all source files
    * Should be called after initial sync to establish baseline
+   * @param config Configuration containing source files to track
    */
-  async initializeTracking(): Promise<void> {
-    for (const source of this.config.sources) {
+  async initializeTracking(config?: SyncConfig): Promise<void> {
+    const syncConfig = config || this.config;
+    if (!syncConfig) {
+      throw new Error('No configuration provided for tracking initialization');
+    }
+
+    for (const source of syncConfig.sources) {
       try {
         if (await fs.pathExists(source)) {
           await this.fileChangeTracker.track(source);
@@ -356,6 +328,14 @@ export class SyncManager {
         console.warn(`Failed to initialize tracking for ${source}: ${error}`);
       }
     }
+  }
+
+  /**
+   * Stop the sync manager and cleanup resources
+   */
+  async stop(): Promise<void> {
+    // Currently no cleanup needed, but method exists for interface compatibility
+    return Promise.resolve();
   }
 
   /**

@@ -1,6 +1,5 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as os from 'os';
 import { GlobalConfig } from '../types';
 
 /**
@@ -17,8 +16,7 @@ export class GlobalConfiguration {
     this.globalPath = process.cwd();
     this.config = {
       rulesFile: path.join(this.globalPath, 'global_rules.md'),
-      mcpFile: path.join(this.globalPath, 'global_mcp.json'),
-      installPath: this.globalPath
+      mcpFile: path.join(this.globalPath, 'global_mcp.json')
     };
   }
 
@@ -225,8 +223,7 @@ export class GlobalConfiguration {
     this.globalPath = newPath;
     this.config = {
       rulesFile: path.join(this.globalPath, 'global_rules.md'),
-      mcpFile: path.join(this.globalPath, 'global_mcp.json'),
-      installPath: this.globalPath
+      mcpFile: path.join(this.globalPath, 'global_mcp.json')
     };
   }
 }

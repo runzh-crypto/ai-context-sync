@@ -1,4 +1,4 @@
-import { AIToolType, TargetConfig, SyncResult, FileChangeEvent } from './index';
+import { AIToolType, TargetConfig, SyncResult } from './index';
 
 /**
  * Base interface for target handlers

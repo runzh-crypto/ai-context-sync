@@ -4,10 +4,6 @@ import {
   SyncConfig, 
   ValidationResult, 
   ConfigCreationOptions,
-  DEFAULT_CONFIG,
-  DEFAULT_TARGETS,
-  AIToolType,
-  TargetConfig,
   SyncMode
 } from '../types';
 import { ConfigValidator } from './validator';
@@ -70,123 +66,124 @@ export class ConfigLoader {
 
   /**
    * Build default configuration based on options
+   * Reads from existing aisync.config.json if available, otherwise creates minimal config
    */
   private static async buildDefaultConfig(options: ConfigCreationOptions): Promise<SyncConfig> {
-    // Use default sources (project-local global files)
-    let sources = options.sources || DEFAULT_CONFIG.sources || [];
-
-    const targets: TargetConfig[] = [];
-
-    // Add default targets if none specified
-    if (!options.targets || options.targets.length === 0) {
-      // Create targets with correct source references based on actual sources
-      const hasRules = sources.some(s => s.includes('rules.md'));
-      const hasMcp = sources.some(s => s.includes('mcp.json'));
-      
-      // Kiro target
-      const kiroMapping = [];
-      if (hasRules) {
-        kiroMapping.push({
-          source: path.basename(sources.find(s => s.includes('rules.md')) || 'global_rules.md'),
-          destination: "steering/rules.md"
-        });
+    try {
+      // Try to read from existing aisync.config.json as template
+      const existingConfigPath = path.resolve('./aisync.config.json');
+      if (await fs.pathExists(existingConfigPath)) {
+        const existingConfig = await fs.readJson(existingConfigPath);
+        
+        // Use existing config as base, override with options if provided
+        return {
+          ...existingConfig,
+          sources: options.sources || existingConfig.sources,
+          targets: options.targets || existingConfig.targets,
+          mode: options.mode || existingConfig.mode || SyncMode.INCREMENTAL,
+          global: options.globalConfig ? (existingConfig.global || {
+            rulesFile: 'global_rules.md',
+            mcpFile: 'global_mcp.json'
+          }) : existingConfig.global
+        };
       }
-      if (hasMcp) {
-        kiroMapping.push({
-          source: path.basename(sources.find(s => s.includes('mcp.json')) || 'global_mcp.json'),
-          destination: "settings/mcp.json"
-        });
-      }
-      
-      targets.push({
-        name: 'kiro',
-        type: AIToolType.KIRO,
-        path: '.kiro',
-        mapping: kiroMapping,
-        enabled: true
-      } as TargetConfig);
-
-      // Cursor target (only rules)
-      if (hasRules) {
-        targets.push({
-          name: 'cursor',
-          type: AIToolType.CURSOR,
-          path: '.cursor',
-          mapping: [{
-            source: path.basename(sources.find(s => s.includes('rules.md')) || 'global_rules.md'),
-            destination: "rules.md"
-          }],
-          enabled: true
-        } as TargetConfig);
-      }
-
-      // VSCode target (only rules)
-      if (hasRules) {
-        targets.push({
-          name: 'vscode',
-          type: AIToolType.VSCODE,
-          path: '.vscode',
-          mapping: [{
-            source: path.basename(sources.find(s => s.includes('rules.md')) || 'global_rules.md'),
-            destination: "rules.md"
-          }],
-          enabled: true
-        } as TargetConfig);
-      }
-    } else {
-      targets.push(...options.targets);
+    } catch (error) {
+      console.warn('Could not read existing config, creating minimal default');
     }
 
-    const config: SyncConfig = {
-      sources,
-      targets,
-      mode: options.mode || DEFAULT_CONFIG.mode || SyncMode.INCREMENTAL
-    };
-
-    // Add global configuration if requested
-    if (options.globalConfig) {
-      config.global = {
+    // Fallback: create minimal config that user must customize
+    return {
+      sources: options.sources || ['./global_rules.md', './global_mcp.json'],
+      targets: options.targets || [
+        {
+          name: 'kiro',
+          type: 'kiro',
+          path: '.kiro',
+          mapping: [
+            {
+              source: 'global_rules.md',
+              destination: 'steering/global_rules.md'
+            },
+            {
+              source: 'global_mcp.json',
+              destination: 'settings/global_mcp.json'
+            }
+          ],
+          enabled: true
+        }
+      ],
+      mode: options.mode || SyncMode.INCREMENTAL,
+      global: options.globalConfig ? {
         rulesFile: 'global_rules.md',
-        mcpFile: 'global_mcp.json',
-        installPath: process.env.HOME || process.env.USERPROFILE || '~'
-      };
-    }
-
-    return config;
+        mcpFile: 'global_mcp.json'
+      } : undefined
+    };
   }
 
   /**
-   * Create configuration template
+   * Create configuration template by reading from existing aisync.config.json
    */
   static async createTemplate(templateName: string): Promise<SyncConfig> {
-    switch (templateName) {
-      case 'minimal':
-        return {
-          sources: ['./rules.md'],
-          targets: [
-            {
-              name: 'kiro',
-              type: AIToolType.KIRO,
-              path: '.kiro',
-              mapping: [
-                {
-                  source: 'rules.md',
-                  destination: 'steering/rules.md'
-                }
-              ]
-            }
-          ],
-          mode: SyncMode.INCREMENTAL
-        };
-
-      case 'multi-tool':
-        return await this.buildDefaultConfig({
-          sources: ['./global_rules.md', './global_mcp.json'],
-          globalConfig: true
-        });
-
-      default:
-        return await this.buildDefaultConfig({});
+    try {
+      // Try to read from existing aisync.config.json as template
+      const templatePath = path.resolve('./aisync.config.json');
+      if (await fs.pathExists(templatePath)) {
+        const templateConfig = await fs.readJson(templatePath);
+        
+        // Modify based on template type
+        switch (templateName.toLowerCase()) {
+          case 'minimal':
+            // Keep only first target and rules file
+            return {
+              ...templateConfig,
+              sources: templateConfig.sources.filter((s: string) => s.includes('rules')),
+              targets: templateConfig.targets.slice(0, 1).map((t: any) => ({
+                ...t,
+                mapping: t.mapping.filter((m: any) => m.source.includes('rules'))
+              }))
+            };
+            
+          case 'multi-tool':
+            // Use all targets from template
+            return templateConfig;
+            
+          case 'basic':
+          default:
+            // Use first 3 targets from template
+            return {
+              ...templateConfig,
+              targets: templateConfig.targets.slice(0, 3)
+            };
+        }
+      }
+    } catch (error) {
+      console.warn('Could not read template from aisync.config.json, using built-in defaults');
     }
+    
+    // Fallback to built-in default if no template file exists
+    return await this.buildDefaultConfig({
+      sources: ['./global_rules.md', './global_mcp.json'],
+      globalConfig: templateName === 'multi-tool'
+    });
+  }
+
+  /**
+   * Get available template names and descriptions
+   */
+  static getAvailableTemplates(): { name: string; description: string }[] {
+    return [
+      {
+        name: 'basic',
+        description: 'Standard configuration with common AI tools (Kiro, Cursor, VSCode)'
+      },
+      {
+        name: 'minimal',
+        description: 'Minimal configuration with only Kiro support'
+      },
+      {
+        name: 'multi-tool',
+        description: 'Full configuration with all supported AI tools and global config'
+      }
+    ];
   }
 }

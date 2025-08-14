@@ -1,8 +1,6 @@
 import { Syncer } from '../core/syncer';
-import { SyncConfig, KiroSyncConfig, AIToolType, SyncMode } from '../types';
+import { SyncConfig, KiroSyncConfig, SyncMode } from '../types';
 import { TargetManager } from '../core/handlers';
-import * as fs from 'fs-extra';
-import * as path from 'path';
 
 // Mock fs-extra
 jest.mock('fs-extra');
@@ -31,12 +29,12 @@ describe('Syncer', () => {
     targets: [
       {
         name: 'kiro',
-        type: AIToolType.KIRO,
-        path: '.kiro',
+        type: 'kiro',
+        path: '.',
         mapping: [
           {
             source: 'global_rules.md',
-            destination: 'steering/rules.md'
+            destination: '.kiro/steering/rules.md'
           }
         ]
       }

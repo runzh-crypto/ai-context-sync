@@ -35,8 +35,7 @@ The new configuration format provides enhanced flexibility and supports multiple
   },
   "global": {
     "rulesFile": "global_rules.md",
-    "mcpFile": "global_mcp.json",
-    "installPath": "~/.aisync"
+    "mcpFile": "global_mcp.json"
   }
 }
 ```

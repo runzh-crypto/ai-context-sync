@@ -50,8 +50,7 @@ describe('GlobalConfiguration', () => {
       const config = globalConfig.getConfig();
       expect(config).toEqual({
         rulesFile: path.join(testDir, 'global_rules.md'),
-        mcpFile: path.join(testDir, 'global_mcp.json'),
-        installPath: testDir
+        mcpFile: path.join(testDir, 'global_mcp.json')
       });
     });
   });

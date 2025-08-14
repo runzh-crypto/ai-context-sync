@@ -5,7 +5,6 @@ dist/
 .env
 coverage/
 *.tgz
-aisync.config.json
 
 /.kiro
 /.cursor

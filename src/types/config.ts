@@ -1,5 +1,4 @@
 import {
-  AIToolType,
   SyncMode,
   TargetConfig,
   SyncConfig,
@@ -81,78 +80,66 @@ export const DEFAULT_CONFIG: Partial<SyncConfig> = {
 
 /**
  * Default target configurations for common AI tools
+ * Based on official documentation paths
  */
-export const DEFAULT_TARGETS: Record<AIToolType, Partial<TargetConfig>> = {
-  [AIToolType.KIRO]: {
-    type: AIToolType.KIRO,
-    path: ".kiro",
+export const DEFAULT_TARGETS: Record<string, Partial<TargetConfig>> = {
+  'kiro': {
+    type: 'kiro',
+    path: ".",
     mapping: [
       {
         source: "global_rules.md",
-        destination: "steering/rules.md",
+        destination: ".kiro/steering/rules.md",
       },
       {
         source: "global_mcp.json",
-        destination: "settings/mcp.json",
+        destination: ".kiro/settings/mcp.json",
       },
     ],
   },
-  [AIToolType.CURSOR]: {
-    type: AIToolType.CURSOR,
-    path: ".cursor",
+  'cursor': {
+    type: 'cursor',
+    path: ".",
     mapping: [
       {
         source: "global_rules.md",
-        destination: "rules.md",
+        destination: ".cursor/rules",
       },
+    ],
+  },
+  'vscode': {
+    type: 'vscode',
+    path: ".",
+    mapping: [
+      {
+        source: "global_rules.md",
+        destination: ".vscode/copilot-instructions.md",
+      },
+    ],
+  },
+  'claude-code': {
+    type: 'claude-code',
+    path: ".",
+    mapping: [
+      {
+        source: "global_rules.md",
+        destination: ".claude/instructions.md",
+      },
+    ],
+  },
+  'gemini-cli': {
+    type: 'gemini-cli',
+    path: ".",
+    mapping: [
       {
         source: "global_mcp.json",
-        destination: "mcp.json",
+        destination: ".gemini/mcp-config.json",
       },
     ],
   },
-  [AIToolType.VSCODE]: {
-    type: AIToolType.VSCODE,
-    path: ".vscode",
-    mapping: [
-      {
-        source: "global_rules.md",
-        destination: "rules.md",
-      },
-    ],
-  },
-  [AIToolType.CLAUDECODE]: {
-    type: AIToolType.CLAUDECODE,
-    path: ".claudecode",
-    mapping: [
-      {
-        source: "global_rules.md",
-        destination: "rules/claude-rules.md",
-      },
-      {
-        source: "global_mcp.json",
-        destination: "config/mcp.json",
-      },
-    ],
-  },
-  [AIToolType.GEMINI_CLI]: {
-    type: AIToolType.GEMINI_CLI,
-    path: ".gemini",
-    mapping: [
-      {
-        source: "global_rules.md",
-        destination: "prompts/gemini-rules.md",
-      },
-      {
-        source: "global_mcp.json",
-        destination: "mcp/config.json",
-      },
-    ],
-  },
-
-  [AIToolType.CUSTOM]: {
-    type: AIToolType.CUSTOM,
-    path: "",
+  'custom': {
+    type: 'custom',
+    path: ".",
     mapping: [],
   },
 };

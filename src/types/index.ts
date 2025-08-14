@@ -1,12 +1,5 @@
-// AI Tool Types
-export enum AIToolType {
-  KIRO = 'kiro',
-  CURSOR = 'cursor',
-  VSCODE = 'vscode',
-  CLAUDECODE = 'claudecode',
-  GEMINI_CLI = 'gemini-cli',
-  CUSTOM = 'custom'
-}
+// AI Tool Types - now flexible string-based
+export type AIToolType = string;
 
 export enum SyncMode {
   FULL = 'full',
@@ -31,7 +24,7 @@ export interface TransformRule {
 export interface TargetConfig {
   name: string;
   type: AIToolType;
-  path: string;
+  path?: string; // Optional - destination paths can be complete
   mapping?: FileMapping[];
   enabled?: boolean;
 }
@@ -40,7 +33,7 @@ export interface TargetConfig {
 export interface GlobalConfig {
   rulesFile: string;
   mcpFile: string;
-  installPath: string;
+  installPath?: string; // Optional - for future use
 }
 
 // Main Sync Configuration

@@ -72,8 +72,8 @@ export class ConfigValidator {
       errors.push(`${prefix}.name is required and must be a string`);
     }
 
-    if (!target.type || !Object.values(AIToolType).includes(target.type)) {
-      errors.push(`${prefix}.type must be one of: ${Object.values(AIToolType).join(', ')}`);
+    if (!target.type || typeof target.type !== 'string') {
+      errors.push(`${prefix}.type is required and must be a string`);
     }
 
     if (!target.path || typeof target.path !== 'string') {
@@ -129,8 +129,9 @@ export class ConfigValidator {
       errors.push('global.mcpFile is required and must be a string');
     }
 
-    if (!global.installPath || typeof global.installPath !== 'string') {
-      errors.push('global.installPath is required and must be a string');
+    // installPath is optional for now
+    if (global.installPath && typeof global.installPath !== 'string') {
+      errors.push('global.installPath must be a string if provided');
     }
 
     return errors;
@@ -149,7 +150,7 @@ export class ConfigValidator {
   static convertLegacyConfig(legacyConfig: any): SyncConfig {
     const targets: TargetConfig[] = legacyConfig.targetDirs.map((dir: string, index: number) => ({
       name: `target-${index}`,
-      type: AIToolType.CUSTOM,
+      type: 'custom',
       path: dir,
       enabled: true
     }));

@@ -19,17 +19,17 @@ export class TargetManager {
   }
 
   /**
-   * Register a handler for a specific AI tool type
+   * Register a handler for AI tool types
+   * Universal handlers are stored with a special key
    */
   register(handler: ITargetHandler): void {
-    // Find all AI tool types this handler can handle
-    const supportedTypes = this.getSupportedTypes(handler);
-    
-    for (const type of supportedTypes) {
-      if (this.handlers.has(type)) {
-        throw new Error(`Handler for ${type} is already registered`);
-      }
-      this.handlers.set(type, handler);
+    // Check if this is a universal handler (can handle any type)
+    if (this.isUniversalHandler(handler)) {
+      this.handlers.set('*', handler);
+    } else {
+      // For specific handlers, we would need them to declare their supported types
+      // This is a placeholder for future specific handlers
+      throw new Error('Specific handlers must implement type declaration');
     }
   }
 
@@ -37,7 +37,19 @@ export class TargetManager {
    * Get handler for a specific AI tool type
    */
   getHandler(type: AIToolType): ITargetHandler | undefined {
-    return this.handlers.get(type);
+    // First check for specific handler
+    const specificHandler = this.handlers.get(type);
+    if (specificHandler) {
+      return specificHandler;
+    }
+    
+    // Fall back to universal handler
+    const universalHandler = this.handlers.get('*');
+    if (universalHandler && universalHandler.canHandle(type)) {
+      return universalHandler;
+    }
+    
+    return undefined;
   }
 
   /**
@@ -58,7 +70,23 @@ export class TargetManager {
    * Check if a handler is registered for the given type
    */
   hasHandler(type: AIToolType): boolean {
-    return this.handlers.has(type);
+    // Check for specific handler first
+    if (this.handlers.has(type)) {
+      return true;
+    }
+    
+    // Check if universal handler can handle this type
+    const universalHandler = this.handlers.get('*');
+    return universalHandler ? universalHandler.canHandle(type) : false;
+  }
+
+  /**
+   * Check if a handler is universal (can handle any AI tool type)
+   */
+  private isUniversalHandler(handler: ITargetHandler): boolean {
+    // Test with a few different types to see if it's universal
+    const testTypes = ['test-type-1', 'test-type-2', 'unknown-ai-tool'];
+    return testTypes.every(type => handler.canHandle(type));
   }
 
   /**
@@ -66,8 +94,11 @@ export class TargetManager {
    */
   getSupportedTypes(handler?: ITargetHandler): AIToolType[] {
     if (handler) {
-      // Test all known AI tool types to see which ones this handler supports
-      return Object.values(AIToolType).filter(type => handler.canHandle(type));
+      if (this.isUniversalHandler(handler)) {
+        return ['*']; // Indicates universal support
+      }
+      // For specific handlers, they would need to declare their types
+      return [];
     }
     
     // Return all types that have registered handlers

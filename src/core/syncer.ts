@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { glob } from 'glob';
 import { SyncConfig, SyncResult, KiroSyncConfig } from '../types';
-import { TargetManager, KiroHandler, CursorHandler, ClaudeCodeHandler, GeminiCLIHandler, VSCodeHandler } from './handlers';
+import { TargetManager, UniversalHandler } from './handlers';
 
 export class Syncer {
   private targetManager: TargetManager;
@@ -13,12 +13,8 @@ export class Syncer {
   }
 
   private registerHandlers(): void {
-    // Register all available handlers
-    this.targetManager.register(new KiroHandler());
-    this.targetManager.register(new CursorHandler());
-    this.targetManager.register(new ClaudeCodeHandler());
-    this.targetManager.register(new GeminiCLIHandler());
-    this.targetManager.register(new VSCodeHandler());
+    // Register universal handler that works for all AI tools based on config
+    this.targetManager.register(new UniversalHandler());
   }
 
   async sync(): Promise<SyncResult> {
