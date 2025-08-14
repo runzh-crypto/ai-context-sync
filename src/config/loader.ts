@@ -66,12 +66,12 @@ export class ConfigLoader {
 
   /**
    * Build default configuration based on options
-   * Reads from existing aisync.config.json if available, otherwise creates minimal config
+   * Reads from existing ai-context-sync.config.json if available, otherwise creates minimal config
    */
   private static async buildDefaultConfig(options: ConfigCreationOptions): Promise<SyncConfig> {
     try {
-      // Try to read from existing aisync.config.json as template
-      const existingConfigPath = path.resolve('./aisync.config.json');
+      // Try to read from existing ai-context-sync.config.json as template
+      const existingConfigPath = path.resolve('./ai-context-sync.config.json');
       if (await fs.pathExists(existingConfigPath)) {
         const existingConfig = await fs.readJson(existingConfigPath);
         
@@ -121,12 +121,12 @@ export class ConfigLoader {
   }
 
   /**
-   * Create configuration template by reading from existing aisync.config.json
+   * Create configuration template by reading from existing ai-context-sync.config.json
    */
   static async createTemplate(templateName: string): Promise<SyncConfig> {
     try {
-      // Try to read from existing aisync.config.json as template
-      const templatePath = path.resolve('./aisync.config.json');
+      // Try to read from existing ai-context-sync.config.json as template
+      const templatePath = path.resolve('./ai-context-sync.config.json');
       if (await fs.pathExists(templatePath)) {
         const templateConfig = await fs.readJson(templatePath);
         
@@ -157,7 +157,7 @@ export class ConfigLoader {
         }
       }
     } catch (error) {
-      console.warn('Could not read template from aisync.config.json, using built-in defaults');
+      console.warn('Could not read template from ai-context-sync.config.json, using built-in defaults');
     }
     
     // Fallback to built-in default if no template file exists

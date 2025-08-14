@@ -24,7 +24,7 @@ docs/
 examples/
 
 # Config files for development
-aisync.config.json
+ai-context-sync.config.json
 global_mcp.json
 global_rules.md
 

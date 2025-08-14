@@ -79,11 +79,11 @@ describe('Configuration System', () => {
   });
 
   describe('ConfigLoader', () => {
-    it('should create configuration from existing aisync.config.json', async () => {
+    it('should create configuration from existing ai-context-sync.config.json', async () => {
       // Test that template creation reads from existing config
       const config = await ConfigLoader.createTemplate('basic');
       
-      // Verify it has sources and targets (actual values depend on aisync.config.json)
+      // Verify it has sources and targets (actual values depend on ai-context-sync.config.json)
       expect(config.sources).toBeDefined();
       expect(config.sources.length).toBeGreaterThan(0);
       expect(config.targets).toBeDefined();

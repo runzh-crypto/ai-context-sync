@@ -2,7 +2,7 @@
  * AI Tool Handler Architecture
  * 
  * Simplified to use a single universal handler that works purely based on
- * configuration from aisync.config.json. No hard-coded tool-specific logic.
+ * configuration from ai-context-sync.config.json. No hard-coded tool-specific logic.
  */
 
 export { BaseTargetHandler } from './base-target-handler';

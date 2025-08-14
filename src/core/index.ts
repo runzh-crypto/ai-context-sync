@@ -1,7 +1,7 @@
 /**
  * Core module exports
  * 
- * This module exports all core functionality of the AiSync system
+ * This module exports all core functionality of the AI Context Sync system
  */
 
 // Handler architecture

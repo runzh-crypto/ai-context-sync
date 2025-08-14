@@ -11,7 +11,7 @@ describe('Core Sync Functionality', () => {
   let testConfig: SyncConfig;
 
   beforeEach(async () => {
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'aisync-core-test-'));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-context-sync-core-test-'));
     
     // Create a minimal test configuration with direct destination paths
     testConfig = {

@@ -12,11 +12,11 @@ describe('UniversalHandler', () => {
 
   beforeEach(async () => {
     handler = new UniversalHandler();
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'aisync-test-'));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ai-context-sync-test-'));
     
-    // Load configuration from aisync.config.json
+    // Load configuration from ai-context-sync.config.json
     try {
-      config = await ConfigLoader.load('./aisync.config.json');
+      config = await ConfigLoader.load('./ai-context-sync.config.json');
     } catch (error) {
       // Fallback to basic template if config file doesn't exist
       config = await ConfigLoader.createTemplate('basic');
@@ -108,9 +108,9 @@ describe('TargetManager', () => {
     handler = new UniversalHandler();
     manager.register(handler);
     
-    // Load configuration from aisync.config.json
+    // Load configuration from ai-context-sync.config.json
     try {
-      config = await ConfigLoader.load('./aisync.config.json');
+      config = await ConfigLoader.load('./ai-context-sync.config.json');
     } catch (error) {
       config = await ConfigLoader.createTemplate('basic');
     }

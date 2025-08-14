@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AiSync configuration system supports multiple AI tools and provides flexible file mapping capabilities. It supports both legacy and new configuration formats for backward compatibility.
+The AI Context Sync configuration system supports multiple AI tools and provides flexible file mapping capabilities. It supports both legacy and new configuration formats for backward compatibility.
 
 ## Configuration Formats
 
@@ -157,7 +157,7 @@ The system provides detailed error messages for configuration issues:
 ### Programmatic Usage
 
 ```typescript
-import { ConfigLoader, ConfigValidator, Syncer } from 'aisync';
+import { ConfigLoader, ConfigValidator, Syncer } from 'ai-context-sync';
 
 // Load configuration
 const config = await ConfigLoader.load('./config.json');
@@ -177,11 +177,11 @@ const result = await syncer.sync();
 
 ```bash
 # Initialize configuration
-aisync init
+ai-context-sync init
 
 # Sync with default configuration
-aisync sync
+ai-context-sync sync
 
 # Sync with custom configuration
-aisync sync -c ./my-config.json
+ai-context-sync sync -c ./my-config.json
 ```

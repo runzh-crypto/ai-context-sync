@@ -1,10 +1,10 @@
 {
-  "name": "aisync",
+  "name": "ai-context-sync",
   "version": "0.0.1",
   "description": "CLI tool for syncing AI tool configurations and rules files to multiple project directories",
   "main": "dist/index.js",
   "bin": {
-    "aisync": "dist/cli.js"
+    "ai-context-sync": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -26,12 +26,12 @@
   "license": "Apache 2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/runzh-crypto/aisync"
+    "url": "https://github.com/runzh-crypto/ai-context-sync"
   },
   "bugs": {
-    "url": "https://github.com/runzh-crypto/aisync/issues"
+    "url": "https://github.com/runzh-crypto/ai-context-sync/issues"
   },
-  "homepage": "https://github.com/runzh-crypto/aisync#readme",
+  "homepage": "https://github.com/runzh-crypto/ai-context-sync#readme",
   "engines": {
     "node": ">=16.0.0"
   },

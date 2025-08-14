@@ -14,7 +14,7 @@ describe('postInstall', () => {
     originalEnv = { ...process.env };
     
     // Create a temporary directory for testing
-    testDir = path.join(os.tmpdir(), `aisync-postinstall-test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
+    testDir = path.join(os.tmpdir(), `ai-context-sync-postinstall-test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
     
     // Set up global config with test directory
     globalConfig = GlobalConfiguration.getInstance();

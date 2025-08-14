@@ -9,7 +9,7 @@ describe('GlobalConfiguration', () => {
 
   beforeEach(async () => {
     // Create a temporary directory path for testing (but don't create the directory yet)
-    testDir = path.join(os.tmpdir(), `aisync-test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
+    testDir = path.join(os.tmpdir(), `ai-context-sync-test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
     
     // Get singleton instance and set test path
     globalConfig = GlobalConfiguration.getInstance();

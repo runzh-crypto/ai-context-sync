@@ -3,7 +3,7 @@
 import { GlobalConfiguration } from './core/global-config';
 
 /**
- * Post-installation script for aisync
+ * Post-installation script for ai-context-sync
  * This script runs after npm/pnpm install and sets up global configuration
  */
 async function postInstall(): Promise<void> {
@@ -15,15 +15,15 @@ async function postInstall(): Promise<void> {
                            process.argv.includes('-g');
 
     if (isGlobalInstall) {
-      console.log('✅ aisync installed globally!');
+      console.log('✅ ai-context-sync installed globally!');
       console.log('To set up global configuration files in a project, run:');
-      console.log('  aisync init --global');
+      console.log('  ai-context-sync init --global');
     } else {
-      console.log('✅ aisync installed locally!');
+      console.log('✅ ai-context-sync installed locally!');
       console.log('To set up project configuration, run:');
-      console.log('  aisync init');
+      console.log('  ai-context-sync init');
       console.log('To create global configuration files, run:');
-      console.log('  aisync init --global');
+      console.log('  ai-context-sync init --global');
     }
   } catch (error) {
     // Don't fail the installation

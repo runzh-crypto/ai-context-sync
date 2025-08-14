@@ -34,7 +34,7 @@ export class UniversalHandler extends BaseTargetHandler {
     // If no mapping found, this is a configuration error
     throw new Error(
       `No mapping found for source file: ${sourceFileName} in target: ${target.name}. ` +
-      `Please add a mapping in aisync.config.json for this file.`
+      `Please add a mapping in ai-context-sync.config.json for this file.`
     );
   }
 

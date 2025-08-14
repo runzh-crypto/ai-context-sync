@@ -10,36 +10,36 @@ import { SyncMode } from './types';
 const program = new Command();
 
 program
-  .name('aisync')
+  .name('ai-context-sync')
   .description('Sync AI tool configurations and rules files to multiple project directories')
   .version('1.0.0')
   .addHelpText('after', `
 Examples:
-  $ aisync sync                           # Sync with default config (incremental mode)
-  $ aisync sync --mode full               # Full sync (replace all files)
-  $ aisync sync --mode incremental        # Incremental sync (only changed files)
-  $ aisync sync --verbose                 # Detailed output
-  $ aisync sync -c custom.config.json     # Use custom config file
-  $ aisync init                           # Create default project config
-  $ aisync init --global                  # Create global config files
-  $ aisync init --template basic          # Use specific template
+  $ ai-context-sync sync                           # Sync with default config (incremental mode)
+  $ ai-context-sync sync --mode full               # Full sync (replace all files)
+  $ ai-context-sync sync --mode incremental        # Incremental sync (only changed files)
+  $ ai-context-sync sync --verbose                 # Detailed output
+  $ ai-context-sync sync -c custom.config.json     # Use custom config file
+  $ ai-context-sync init                           # Create default project config
+  $ ai-context-sync init --global                  # Create global config files
+  $ ai-context-sync init --template basic          # Use specific template
 
 Sync Modes:
   full         Complete replacement of target files (slower but thorough)
   incremental  Only sync files that have changed (faster, default)
 
 Supported AI Tools:
-  - Kiro (.kiro/steering/, .kiro/settings/)
-  - Cursor (.cursor/)
-  - VSCode (.vscode/)
-  - Claude Code (.claudecode/rules/, .claudecode/config/)
-  - Gemini CLI (.gemini/prompts/, .gemini/mcp/)
+  - Kiro 
+  - Cursor 
+  - VSCode 
+  - Claude Code 
+  - Gemini CLI 
 `);
 
 program
   .command('sync')
   .description('Execute synchronization operation')
-  .option('-c, --config <path>', 'Configuration file path', './aisync.config.json')
+  .option('-c, --config <path>', 'Configuration file path', './ai-context-sync.config.json')
   .option('-m, --mode <mode>', 'Sync mode: full (complete replacement) or incremental (only changed files)', 'incremental')
   .option('-v, --verbose', 'Enable verbose output with detailed information')
   .action(async (options) => {
@@ -122,14 +122,14 @@ program
 program
   .command('init')
   .description('Create default configuration file and global config files')
-  .option('-o, --output <path>', 'Output path for config file', './aisync.config.json')
+  .option('-o, --output <path>', 'Output path for config file', './ai-context-sync.config.json')
   .option('-g, --global', 'Create global_rules.md and global_mcp.json files')
   .option('-t, --template <name>', 'Configuration template to use (basic, minimal, multi-tool)', 'basic')
   .option('-v, --verbose', 'Enable verbose output')
   .action(async (options) => {
     try {
       if (options.verbose) {
-        console.log(chalk.blue('🔧 Initializing AiSync configuration...'));
+        console.log(chalk.blue('🔧 Initializing AI Context Sync configuration...'));
         console.log(chalk.gray(`Template: ${options.template}`));
         console.log(chalk.gray(`Output: ${options.output}`));
         console.log(chalk.gray(`Global files: ${options.global ? 'Yes' : 'No'}`));
@@ -202,12 +202,12 @@ program
 
       console.log(chalk.gray('\nNext steps:'));
       if (!options.global) {
-        console.log(chalk.gray('1. Create global files: aisync init --global'));
+        console.log(chalk.gray('1. Create global files: ai-context-sync init --global'));
       } else {
         console.log(chalk.gray('1. Customize global_rules.md and global_mcp.json files'));
       }
       console.log(chalk.gray('2. Review and customize the configuration file'));
-      console.log(chalk.gray('3. Run "aisync sync" to sync files to AI tool directories'));
+      console.log(chalk.gray('3. Run "ai-context-sync sync" to sync files to AI tool directories'));
       
       if (options.verbose) {
         console.log(chalk.gray('\nAvailable templates:'));
