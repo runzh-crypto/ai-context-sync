@@ -17,12 +17,12 @@ The new configuration format provides enhanced flexibility and supports multiple
     {
       "name": "kiro",
       "type": "kiro",
-      "path": ".kiro",
+      "path": ".",
       "enabled": true,
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": "steering/rules.md"
+          "destination": ".kiro/steering/rules.md"
         }
       ]
     }

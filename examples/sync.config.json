@@ -7,40 +7,40 @@
     {
       "name": "kiro",
       "type": "kiro",
-      "path": ".kiro",
+      "path": ".",
       "enabled": true,
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": "steering/rules.md"
+          "destination": ".kiro/steering/rules.md"
         },
         {
           "source": "global_mcp.json",
-          "destination": "settings/mcp.json"
+          "destination": ".kiro/settings/mcp.json"
         }
       ]
     },
     {
       "name": "cursor",
       "type": "cursor",
-      "path": ".cursor",
+      "path": ".",
       "enabled": true,
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": "rules.md"
+          "destination": ".cursor/rules/global_rules.md"
         }
       ]
     },
     {
       "name": "vscode",
       "type": "vscode",
-      "path": ".vscode",
+      "path": ".",
       "enabled": true,
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": "rules.md"
+          "destination": ".vscode/instructions.md"
         }
       ]
     }
