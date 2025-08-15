@@ -1,0 +1,23 @@
+{
+  "sources": [
+    "./global_rules.md"
+  ],
+  "targets": [
+    {
+      "name": "kiro",
+      "type": "kiro",
+      "path": ".",
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": ".kiro/steering/rules.md"
+        }
+      ],
+      "enabled": true
+    }
+  ],
+  "mode": "incremental",
+  "global": {
+    "rulesFile": "global_rules.md"
+  }
+}

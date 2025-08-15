@@ -1,13 +1,14 @@
 {
   "name": "ai-context-sync",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "CLI tool for syncing AI tool configurations and rules files to multiple project directories",
   "main": "dist/index.js",
   "bin": {
     "ai-context-sync": "dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-templates",
+    "copy-templates": "if not exist dist\\templates mkdir dist\\templates && copy src\\templates\\*.json dist\\templates\\",
     "dev": "tsc --watch",
     "start": "node dist/cli.js",
     "test": "jest",

@@ -1,0 +1,93 @@
+{
+  "sources": [
+    "./global_rules.md",
+    "./global_mcp.json"
+  ],
+  "targets": [
+    {
+      "name": "kiro",
+      "type": "kiro",
+      "path": ".",
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": ".kiro/steering/rules.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".kiro/settings/mcp.json"
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "cursor",
+      "type": "cursor",
+      "path": ".",
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": ".cursor/rules/global_rules.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".cursor/mcp.json"
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "vscode",
+      "type": "vscode",
+      "path": ".",
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": ".vscode/instructions.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".vscode/settings.json"
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "claude-code",
+      "type": "claudecode",
+      "path": ".",
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": ".claudecode/claudecode.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".claudecode/mcp.json"
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "gemini-code-assist",
+      "type": "gemini-cli",
+      "path": ".",
+      "mapping": [
+        {
+          "source": "global_rules.md",
+          "destination": ".gemini/gemini.md"
+        },
+        {
+          "source": "global_mcp.json",
+          "destination": ".gemini/settings.json"
+        }
+      ],
+      "enabled": true
+    }
+  ],
+  "mode": "incremental",
+  "global": {
+    "rulesFile": "global_rules.md",
+    "mcpFile": "global_mcp.json"
+  }
+}

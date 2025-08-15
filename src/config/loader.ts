@@ -66,105 +66,81 @@ export class ConfigLoader {
 
   /**
    * Build default configuration based on options
-   * Reads from existing ai-context-sync.config.json if available, otherwise creates minimal config
+   * Reads from template file and applies user options
    */
   private static async buildDefaultConfig(options: ConfigCreationOptions): Promise<SyncConfig> {
+    let defaultConfig: SyncConfig;
+
     try {
-      // Try to read from existing ai-context-sync.config.json as template
+      // Read default template from file
+      const templatePath = path.join(__dirname, '../templates/default.config.json');
+      defaultConfig = await fs.readJson(templatePath);
+    } catch (error) {
+      throw new Error(`Failed to load default configuration template: ${error}`);
+    }
+
+    // Apply user options to override defaults
+    const config: SyncConfig = {
+      ...defaultConfig,
+      sources: options.sources || defaultConfig.sources,
+      targets: options.targets || defaultConfig.targets,
+      mode: options.mode || defaultConfig.mode,
+      global: options.globalConfig ? (defaultConfig.global || {
+        rulesFile: 'global_rules.md',
+        mcpFile: 'global_mcp.json'
+      }) : defaultConfig.global
+    };
+
+    // If there's an existing config file, merge with it (for updates)
+    try {
       const existingConfigPath = path.resolve('./ai-context-sync.config.json');
       if (await fs.pathExists(existingConfigPath)) {
         const existingConfig = await fs.readJson(existingConfigPath);
         
-        // Use existing config as base, override with options if provided
+        // Merge existing config with template, preserving user customizations
         return {
+          ...config,
           ...existingConfig,
-          sources: options.sources || existingConfig.sources,
-          targets: options.targets || existingConfig.targets,
-          mode: options.mode || existingConfig.mode || SyncMode.INCREMENTAL,
-          global: options.globalConfig ? (existingConfig.global || {
-            rulesFile: 'global_rules.md',
-            mcpFile: 'global_mcp.json'
-          }) : existingConfig.global
+          sources: options.sources || existingConfig.sources || config.sources,
+          targets: options.targets || existingConfig.targets || config.targets,
+          mode: options.mode || existingConfig.mode || config.mode,
+          global: options.globalConfig ? (existingConfig.global || config.global) : existingConfig.global || config.global
         };
       }
     } catch (error) {
-      console.warn('Could not read existing config, creating minimal default');
+      // If we can't read existing config, just use the template-based config
+      console.warn('Could not read existing config, using default template');
     }
 
-    // Fallback: create minimal config that user must customize
-    return {
-      sources: options.sources || ['./global_rules.md', './global_mcp.json'],
-      targets: options.targets || [
-        {
-          name: 'kiro',
-          type: 'kiro',
-          path: '.',
-          mapping: [
-            {
-              source: 'global_rules.md',
-              destination: '.kiro/steering/global_rules.md'
-            },
-            {
-              source: 'global_mcp.json',
-              destination: '.kiro/settings/global_mcp.json'
-            }
-          ],
-          enabled: true
-        }
-      ],
-      mode: options.mode || SyncMode.INCREMENTAL,
-      global: options.globalConfig ? {
-        rulesFile: 'global_rules.md',
-        mcpFile: 'global_mcp.json'
-      } : undefined
-    };
+    return config;
   }
 
   /**
-   * Create configuration template by reading from existing ai-context-sync.config.json
+   * Create configuration template by reading from template files
    */
   static async createTemplate(templateName: string): Promise<SyncConfig> {
     try {
-      // Try to read from existing ai-context-sync.config.json as template
-      const templatePath = path.resolve('./ai-context-sync.config.json');
+      // Map template names to file names
+      const templateFileMap: { [key: string]: string } = {
+        'basic': 'default.config.json',
+        'minimal': 'minimal.config.json',
+        'multi-tool': 'multi-tool.config.json'
+      };
+
+      const templateFileName = templateFileMap[templateName.toLowerCase()] || 'default.config.json';
+      const templatePath = path.join(__dirname, '../templates', templateFileName);
+      
       if (await fs.pathExists(templatePath)) {
-        const templateConfig = await fs.readJson(templatePath);
-        
-        // Modify based on template type
-        switch (templateName.toLowerCase()) {
-          case 'minimal':
-            // Keep only first target and rules file
-            return {
-              ...templateConfig,
-              sources: templateConfig.sources.filter((s: string) => s.includes('rules')),
-              targets: templateConfig.targets.slice(0, 1).map((t: any) => ({
-                ...t,
-                mapping: t.mapping.filter((m: any) => m.source.includes('rules'))
-              }))
-            };
-            
-          case 'multi-tool':
-            // Use all targets from template
-            return templateConfig;
-            
-          case 'basic':
-          default:
-            // Use first 3 targets from template
-            return {
-              ...templateConfig,
-              targets: templateConfig.targets.slice(0, 3)
-            };
-        }
+        return await fs.readJson(templatePath);
+      } else {
+        throw new Error(`Template file not found: ${templatePath}`);
       }
     } catch (error) {
-      console.warn('Could not read template from ai-context-sync.config.json, using built-in defaults');
+      console.warn(`Could not read template '${templateName}', using default template`);
+      // Fallback to default template
+      const defaultTemplatePath = path.join(__dirname, '../templates/default.config.json');
+      return await fs.readJson(defaultTemplatePath);
     }
-    
-    // Fallback to built-in default if no template file exists
-    return await this.buildDefaultConfig({
-      sources: ['./global_rules.md', './global_mcp.json'],
-      globalConfig: templateName === 'multi-tool'
-    });
   }
 
   /**

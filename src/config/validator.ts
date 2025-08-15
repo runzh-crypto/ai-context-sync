@@ -125,8 +125,8 @@ export class ConfigValidator {
       errors.push('global.rulesFile is required and must be a string');
     }
 
-    if (!global.mcpFile || typeof global.mcpFile !== 'string') {
-      errors.push('global.mcpFile is required and must be a string');
+    if (global.mcpFile && typeof global.mcpFile !== 'string') {
+      errors.push('global.mcpFile must be a string if provided');
     }
 
     // installPath is optional for now
