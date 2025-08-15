@@ -98,15 +98,15 @@ export class ConfigLoader {
         {
           name: 'kiro',
           type: 'kiro',
-          path: '.kiro',
+          path: '.',
           mapping: [
             {
               source: 'global_rules.md',
-              destination: 'steering/global_rules.md'
+              destination: '.kiro/steering/global_rules.md'
             },
             {
               source: 'global_mcp.json',
-              destination: 'settings/global_mcp.json'
+              destination: '.kiro/settings/global_mcp.json'
             }
           ],
           enabled: true

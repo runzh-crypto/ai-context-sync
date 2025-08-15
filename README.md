@@ -22,16 +22,46 @@ npm install -g ai-context-sync
 
 ## Quick Start
 
-1. Initialize configuration:
+1. Initialize configuration and create source files:
 ```bash
-ai-context-sync init
+# Create configuration file and source files (global_rules.md, global_mcp.json)
+ai-context-sync init --global
 ```
 
-2. Edit `ai-context-sync.config.json` to match your needs
-3. Run sync:
+2. Customize your source files:
+   - Edit `global_rules.md` with your AI development rules and guidelines
+   - Edit `global_mcp.json` with your MCP (Model Context Protocol) server configurations
+
+3. Review and customize `ai-context-sync.config.json` to match your needs
+
+4. Run sync to distribute files to AI tool directories:
 ```bash
 ai-context-sync sync
 ```
+
+### Alternative: Step-by-step setup
+
+If you prefer to set up manually:
+
+```bash
+# 1. Create configuration file only
+ai-context-sync init
+
+# 2. Create source files with default content
+ai-context-sync init --global
+
+# 3. Customize files and run sync
+ai-context-sync sync
+```
+
+## Source Files
+
+AI Context Sync works by syncing **source files** to multiple AI tool directories. You need to create these source files first:
+
+- **`global_rules.md`**: Contains your AI development rules, coding standards, and guidelines
+- **`global_mcp.json`**: Contains your MCP (Model Context Protocol) server configurations
+
+Use `ai-context-sync init --global` to create these files with sensible defaults, then customize them for your needs.
 
 ## Configuration
 
@@ -213,8 +243,8 @@ ai-context-sync sync
 ```
 project/
 ├── ai-context-sync.config.json # Configuration file
-├── global_rules.md             # Your global rules
-├── global_mcp.json            # Your MCP configuration
+├── global_rules.md             # Your global AI rules (source file)
+├── global_mcp.json            # Your MCP server config (source file)
 ├── .kiro/
 │   ├── steering/
 │   │   └── rules.md           # ← Synced from global_rules.md
