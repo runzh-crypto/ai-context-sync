@@ -69,75 +69,44 @@ export class ConfigLoader {
    * Reads from template file and applies user options
    */
   private static async buildDefaultConfig(options: ConfigCreationOptions): Promise<SyncConfig> {
-    let defaultConfig: SyncConfig;
-
     try {
       // Read default template from file
       const templatePath = path.join(__dirname, '../templates/default.config.json');
-      defaultConfig = await fs.readJson(templatePath);
+      const defaultConfig = await fs.readJson(templatePath);
+
+      // Apply user options to override defaults
+      return {
+        ...defaultConfig,
+        sources: options.sources || defaultConfig.sources,
+        targets: options.targets || defaultConfig.targets,
+        mode: options.mode || defaultConfig.mode,
+        global: options.globalConfig ? (defaultConfig.global || {
+          rulesFile: 'global_rules.md',
+          mcpFile: 'global_mcp.json'
+        }) : defaultConfig.global
+      };
     } catch (error) {
       throw new Error(`Failed to load default configuration template: ${error}`);
     }
-
-    // Apply user options to override defaults
-    const config: SyncConfig = {
-      ...defaultConfig,
-      sources: options.sources || defaultConfig.sources,
-      targets: options.targets || defaultConfig.targets,
-      mode: options.mode || defaultConfig.mode,
-      global: options.globalConfig ? (defaultConfig.global || {
-        rulesFile: 'global_rules.md',
-        mcpFile: 'global_mcp.json'
-      }) : defaultConfig.global
-    };
-
-    // If there's an existing config file, merge with it (for updates)
-    try {
-      const existingConfigPath = path.resolve('./ai-context-sync.config.json');
-      if (await fs.pathExists(existingConfigPath)) {
-        const existingConfig = await fs.readJson(existingConfigPath);
-        
-        // Merge existing config with template, preserving user customizations
-        return {
-          ...config,
-          ...existingConfig,
-          sources: options.sources || existingConfig.sources || config.sources,
-          targets: options.targets || existingConfig.targets || config.targets,
-          mode: options.mode || existingConfig.mode || config.mode,
-          global: options.globalConfig ? (existingConfig.global || config.global) : existingConfig.global || config.global
-        };
-      }
-    } catch (error) {
-      // If we can't read existing config, just use the template-based config
-      console.warn('Could not read existing config, using default template');
-    }
-
-    return config;
   }
 
   /**
    * Create configuration template by reading from template files
    */
   static async createTemplate(templateName: string): Promise<SyncConfig> {
-    try {
-      // Map template names to file names
-      const templateFileMap: { [key: string]: string } = {
-        'basic': 'default.config.json',
-        'minimal': 'minimal.config.json',
-        'multi-tool': 'multi-tool.config.json'
-      };
+    const templateFileMap: { [key: string]: string } = {
+      'basic': 'default.config.json',
+      'minimal': 'minimal.config.json',
+      'multi-tool': 'multi-tool.config.json'
+    };
 
-      const templateFileName = templateFileMap[templateName.toLowerCase()] || 'default.config.json';
-      const templatePath = path.join(__dirname, '../templates', templateFileName);
-      
-      if (await fs.pathExists(templatePath)) {
-        return await fs.readJson(templatePath);
-      } else {
-        throw new Error(`Template file not found: ${templatePath}`);
-      }
+    const templateFileName = templateFileMap[templateName.toLowerCase()] || 'default.config.json';
+    const templatePath = path.join(__dirname, '../templates', templateFileName);
+    
+    try {
+      return await fs.readJson(templatePath);
     } catch (error) {
       console.warn(`Could not read template '${templateName}', using default template`);
-      // Fallback to default template
       const defaultTemplatePath = path.join(__dirname, '../templates/default.config.json');
       return await fs.readJson(defaultTemplatePath);
     }

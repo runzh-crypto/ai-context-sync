@@ -144,57 +144,21 @@ export class SyncManager {
    */
   private async cleanTargetDirectories(config: SyncConfig): Promise<void> {
     for (const target of config.targets) {
-      if (target.enabled === false) {
-        continue;
-      }
+      if (target.enabled === false) continue;
 
       try {
-        const handler = this.targetManager.getHandler(target.type);
-        if (!handler) {
-          continue;
-        }
-
-        // Clean each mapped destination directory
+        // Clean each mapped destination file
         if (target.mapping) {
           for (const mapping of target.mapping) {
-            const targetPath = path.dirname(mapping.destination);
-            
-            if (await fs.pathExists(targetPath)) {
-              // Remove all files in the target directory but keep the directory structure
-              await this.cleanDirectory(targetPath);
+            if (await fs.pathExists(mapping.destination)) {
+              await fs.remove(mapping.destination);
             }
           }
         }
       } catch (error) {
         // Log warning but don't fail the entire sync
-        console.warn(`Failed to clean target directory for ${target.name}: ${error}`);
+        console.warn(`Failed to clean target files for ${target.name}: ${error}`);
       }
-    }
-  }
-
-
-
-  /**
-   * Clean a directory by removing all files but preserving directory structure
-   * @param dirPath - Directory path to clean
-   */
-  private async cleanDirectory(dirPath: string): Promise<void> {
-    try {
-      const items = await fs.readdir(dirPath);
-      
-      for (const item of items) {
-        const itemPath = path.join(dirPath, item);
-        const stats = await fs.stat(itemPath);
-        
-        if (stats.isFile()) {
-          await fs.remove(itemPath);
-        } else if (stats.isDirectory()) {
-          // Recursively clean subdirectories
-          await this.cleanDirectory(itemPath);
-        }
-      }
-    } catch (error) {
-      throw new Error(`Failed to clean directory ${dirPath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

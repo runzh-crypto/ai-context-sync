@@ -10,7 +10,7 @@
       "mapping": [
         {
           "source": "global_rules.md",
-          "destination": ".kiro/steering/rules.md"
+          "destination": ".kiro/steering/global_rules.md"
         }
       ],
       "enabled": true

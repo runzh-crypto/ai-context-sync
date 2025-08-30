@@ -1,6 +1,6 @@
 {
   "name": "ai-context-sync",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "CLI tool for syncing AI tool configurations and rules files to multiple project directories",
   "main": "dist/index.js",
   "bin": {
